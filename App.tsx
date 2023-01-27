@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
 import styled, { ThemeProvider } from 'styled-components/native';
 import AppRouter from '@navigation/AppRouter';
-import useTheme from '@theme/useTheme';
 import SplashScreen from 'react-native-splash-screen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
+import theme from '@styles/Styles';
 
 const AppLayout = styled.View({
   flex: 1,
@@ -14,8 +13,6 @@ const AppLayout = styled.View({
 });
 
 export default function App() {
-  const theme = useTheme();
-
   const reactQueryClient = new QueryClient({
     defaultOptions: {
       queries: {
