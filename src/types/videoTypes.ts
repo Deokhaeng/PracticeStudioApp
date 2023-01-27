@@ -1,15 +1,21 @@
 export interface VideoContentsPropsType {
-  video: {
-    id: number;
-    url: string;
-    title: string;
-    thumbnail: string;
-    date: string;
-    description: string;
-  };
+  video: Partial<VideoContentType>;
+  progressStatus: number;
 }
 
 export interface VideoHeaderPropsType {
   value: boolean;
   setValue(): void;
+  setProgressStatus(_index: number): void;
+}
+
+export interface VideoContentType {
+  _id: string;
+  videoId: string;
+  url: string;
+  title: string;
+  thumbnail: string;
+  description: string;
+  date: string;
+  progressStatus?: number;
 }

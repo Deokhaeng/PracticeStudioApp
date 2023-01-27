@@ -1,9 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SignInMainScreen } from '@screens/index';
+import { SignInMainScreen } from '@screens/auth';
+import useAutoLogin from '@hooks/auth/useAutoLogin';
 
 export default function Auth() {
   const AuthStack = createStackNavigator();
+  useAutoLogin();
 
   return (
     <AuthStack.Navigator
@@ -13,7 +15,8 @@ export default function Auth() {
           backgroundColor: '#fff',
         },
         headerTitleAlign: 'center',
-      }}>
+      }}
+    >
       <AuthStack.Screen
         name="SignInMainScreen"
         component={SignInMainScreen}

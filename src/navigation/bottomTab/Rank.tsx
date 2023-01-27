@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { RankScreen } from '@screens/index';
+import { RankScreen } from '@screens/rank';
 
 export default function Rank() {
   const RankStack = createStackNavigator();
@@ -13,7 +13,8 @@ export default function Rank() {
           backgroundColor: '#fff',
         },
         headerTitleAlign: 'center',
-      }}>
+      }}
+    >
       <RankStack.Screen
         name="RankScreen"
         component={RankScreen}

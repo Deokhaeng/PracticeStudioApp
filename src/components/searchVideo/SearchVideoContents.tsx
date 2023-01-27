@@ -3,6 +3,7 @@ import { Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { SearchVideoContentsType } from '~types/searchVideoTypes';
 import { AlertModal, Spacer, Typo } from '@components/common';
+import useVideos from '@hooks/useVideos';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -28,9 +29,12 @@ const SerchVideo = {
 export default function SearchVideoContents({ videoContents }: SearchVideoContentsType) {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
+  const { addVideos } = useVideos();
 
   useEffect(() => {
     if (!saved) return;
+    const params = '';
+    // addVideos.mutate(params);
     console.log('저장');
   }, [saved]);
 

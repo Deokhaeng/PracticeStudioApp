@@ -5,9 +5,8 @@ import SearchIcon from '@assets/image/icon-search.svg';
 import { Spacer, TextInputBox, ScreensLayout } from '@components/common';
 import { SearchVideoContents } from '@components/searchVideo';
 import { ScrollView } from 'react-native';
-import useSearchVideos from '@hooks/useSearchVideos';
-import { TouchableOpacity, Text } from 'react-native';
 import { VideoContentType } from '~types/videoTypes';
+import useVideos from '@hooks/useVideos';
 
 const SearchVideo = {
   Container: styled.View({
@@ -53,12 +52,12 @@ const dumyData: any = [
 
 export default function SearchVideoScreen() {
   const [videoName, setVideoName] = useState<string>('');
-  const { getSearchVideos } = useSearchVideos();
+  const { getSearchVideos } = useVideos();
   const { data, isSuccess } = getSearchVideos;
 
   useEffect(() => {
     if (!videoName) return;
-    getSearchVideos.mutate(videoName);
+    // getSearchVideos.mutate(videoName);
     console.log('videoName', videoName);
   }, [videoName]);
 

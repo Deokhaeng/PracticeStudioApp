@@ -1,9 +1,5 @@
-export interface SearchVideoContentsPropsType {
-  searchVideo: {
-    id: number;
-    url: string;
-    title: string;
-    thumbnail: string;
-    description: string;
-  };
+import { VideoContentType } from './videoTypes';
+
+export interface SearchVideoContentsType {
+  videoContents: Partial<VideoContentType>;
 }
