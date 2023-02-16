@@ -1,3 +1,7 @@
+import { PixelRatio } from 'react-native';
+
+const fontScale = PixelRatio.getFontScale();
+
 const ColorsBase = {
   PINK: '#FD3049',
   SKYBLUE: '#18A0FB',
@@ -19,11 +23,15 @@ const theme = {
     TEXT_SUB: ColorsBase.DARKGRAY,
     TEXT_REVERSE: ColorsBase.WHITE,
   },
+  fonts: {
+    fontScale: fontScale,
+  },
 };
 
 declare module 'styled-components/native' {
   export interface DefaultTheme {
     colors: typeof theme.colors;
+    fonts: typeof theme.fonts;
   }
 }
 
