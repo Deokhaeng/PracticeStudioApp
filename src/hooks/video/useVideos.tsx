@@ -6,7 +6,7 @@ export default function useVideos() {
   const getVideos = useQuery(['videos'], () => API.Video.getItem(), {
     retry: 0,
     onError: (error) => {
-      console.log(error);
+      console.log('getVideos_error', error);
     },
     onSuccess: (data) => {
       console.log('data', data);
@@ -15,7 +15,7 @@ export default function useVideos() {
 
   const addVideos = useMutation(API.Video.postItem, {
     onError: (error) => {
-      console.log(error);
+      console.log('addVideos_error', error);
     },
     onSuccess: (data) => {
       console.log('data', data);
@@ -24,7 +24,7 @@ export default function useVideos() {
   });
   const getSearchVideos = useMutation(API.Video.searchItem, {
     onError: (error) => {
-      console.log(error);
+      console.log('getSearchVideos_error', error);
     },
     onSuccess: (data) => {
       console.log('data', data);
