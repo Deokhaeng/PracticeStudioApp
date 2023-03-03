@@ -14,11 +14,11 @@ let $$retry: boolean = false;
 
 client.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
-    const access = Token.getAccessToken();
+    const access = await Token.getAccessToken();
     return {
       ...config,
       headers: {
-        Authorization: `Bearer ${access}`,
+        Authorization: `${access}`,
       },
     };
   },
@@ -41,14 +41,13 @@ client.interceptors.response.use(
       }
 
       $$retry = true;
-
       const tokenResponse = await API.Auth.refresh({ token: refreshToken });
       const newToken = tokenResponse.data.accessToken;
       Token.setAccessToken(newToken);
       return {
         ...requestConfig,
         headers: {
-          Authorization: `Bearer ${newToken}`,
+          Authorization: `${newToken}`,
         },
       };
     } else if ($$retry) {

@@ -1,6 +1,10 @@
 import { AxiosResponse } from 'axios';
 import { client } from './client';
 
+export interface Response {
+  error: null;
+  message: string;
+}
 export interface TPTokenArgs {
   /** 서드 파티 타입 */
   type: 'facebook' | 'kakao' | 'apple' | 'google';
@@ -12,6 +16,13 @@ export interface TokenResponse {
   accessToken: string;
   /** 리프레시 토큰. 액세스 토큰 만료 시 이것을 사용하면 재발급 받을 수 있습니다. */
   refreshToken: string;
+}
+
+export interface ProfileType {
+  name: string;
+  gender: string;
+  profileImage: string;
+  birth: string;
 }
 
 const Auth = {
@@ -27,6 +38,21 @@ const Auth = {
     const endpoint = `/refresh?refreshToken=${args.token}`;
 
     return client.get<TokenResponse>(endpoint);
+  },
+  withdraw(): Promise<AxiosResponse<Response>> {
+    const endpoint = `/user/withdraw`;
+
+    return client.delete<Response>(endpoint);
+  },
+  putProfile(args: Partial<ProfileType>): Promise<AxiosResponse<TokenResponse>> {
+    const endpoint = `/user/profile`;
+
+    return client.put<TokenResponse>(endpoint, args);
+  },
+  getProfile(): Promise<AxiosResponse<ProfileType>> {
+    const endpoint = `/user/profile`;
+
+    return client.get<ProfileType>(endpoint);
   },
 };
 
