@@ -10,6 +10,8 @@ const useAutoLogin = () => {
     (async () => {
       const access = await Token.getAccessToken();
       const refresh = await Token.getRefreshToken();
+
+      console.log(access, refresh);
       if (access || refresh) {
         navigation.replace('AppMain', {});
       } else {

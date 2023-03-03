@@ -6,15 +6,12 @@ import AppleIcon from '@assets/image/icon-apple.svg';
 import FacebookIcon from '@assets/image/icon-facebook.svg';
 import GoogleIcon from '@assets/image/icon-google.svg';
 import KakaoIcon from '@assets/image/icon-kakao.svg';
-import useTheme from '@theme/useTheme';
 import isAndroid from '@utils/isAndroid';
 import { NavigationProps } from '~types/navigationTypes';
 import useAppleAuth from '@hooks/auth/useAppleAuth';
 import useAuth from '@hooks/auth/useAuth';
-import API from 'api';
-import { Alert } from 'react-native';
-import processAccessToken from '@utils/processAccessToken';
 import useKakaoAuth from '@hooks/auth/useKakaoAuth';
+import theme from '@theme/index';
 
 const SignInMain = {
   Container: styled.View(({ theme }) => ({
@@ -42,7 +39,6 @@ const SignInMain = {
 
 export default function SignInMainScreen() {
   const navigation = useNavigation<NavigationProps>();
-  const theme = useTheme();
   const appleAuth = useAppleAuth();
   const kakaoAuth = useKakaoAuth();
   const { getTpToken } = useAuth();
@@ -50,9 +46,8 @@ export default function SignInMainScreen() {
   const performTPLogin = async (type: 'facebook' | 'kakao' | 'apple' | 'google', tokenPromise: Promise<string | null>) => {
     let token: string | null = null;
     token = await tokenPromise;
-    console.log('token', token);
     if (!token) {
-      Alert.alert('로그인 실패', '외부 서비스 연결에 실패하였습니다.');
+      // Alert.alert('로그인 실패', '외부 서비스 연결에 실패하였습니다.');
       return;
     }
     getTpToken.mutate({ type, token });
