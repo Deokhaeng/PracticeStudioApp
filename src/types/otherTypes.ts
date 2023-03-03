@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { GestureResponderEvent } from 'react-native';
 import { DefaultTheme } from 'styled-components';
 
 export type SpacerPropsType = {
@@ -34,16 +35,17 @@ export interface CheckTogglePropsType {
   type: ToggleType;
 }
 
-export type ModalType = 'cancel' | 'check' | 'save' | 'remove' | 'profile';
+export type ModalType = 'cancel' | 'check' | 'save' | 'remove' | 'profile' | 'learned' | 'beforeLearned';
 
 export interface AlertModalPropsType {
   alertText: string;
   type: ModalType;
   modalVisible: boolean;
-  setValue(value: boolean): void;
-  value: boolean;
+  setValue?(value: boolean): void;
+  value?: boolean;
   modalWidth?: number;
   handleModal: (visible: boolean) => void;
+  onPress?: (event?: GestureResponderEvent) => void;
 }
 
 export type TextInputBoxProps = {

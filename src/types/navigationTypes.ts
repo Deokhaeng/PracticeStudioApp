@@ -4,12 +4,11 @@ import { VideoContentType } from './videoTypes';
 export type RouteParams = {
   // Auth
   Auth: {};
-  SignInMain: {};
-  SignInSub: {};
-  SignUp: {};
+  SignInMainScreen: {};
 
   // Profile
   ProfileScreen: {};
+  ProfileSettingScreen: {};
 
   // AppMain
   AppMain: {};

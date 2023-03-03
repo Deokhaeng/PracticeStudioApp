@@ -1,5 +1,5 @@
 export interface VideoContentsPropsType {
-  video: Partial<VideoContentType>;
+  video: VideoContentType;
   progressStatus: number;
 }
 
