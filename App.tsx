@@ -4,7 +4,7 @@ import AppRouter from '@navigation/AppRouter';
 import SplashScreen from 'react-native-splash-screen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
-import theme from '@styles/Styles';
+import theme from '@theme/index';
 
 const AppLayout = styled.View({
   flex: 1,
