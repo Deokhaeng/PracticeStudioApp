@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
-import ArrowBottomIcon from '@assets/image/icon-arrow-buttom.svg';
+import ArrowBottomIcon from '@assets/image/icon-arrow-bottom-small.svg';
 import ArrowTopIcon from '@assets/image/icon-arrow-top.svg';
 import { Spacer, Typo } from '@components/common';
 import { VideoHeaderPropsType } from '~types/videoTypes';
