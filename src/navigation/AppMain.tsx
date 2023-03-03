@@ -5,16 +5,15 @@ import VideoIcon from '@assets/image/icon-video.svg';
 import SearchVideoIcon from '@assets/image/icon-search-video.svg';
 import CalendarIcon from '@assets/image/icon-calendar.svg';
 import RankIcon from '@assets/image/icon-rank.svg';
-import useTheme from '@theme/useTheme';
 import isAndroid from '@utils/isAndroid';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useSetRecoilState } from 'recoil';
 import { navigationState } from '@atoms/navigationState';
+import theme from '@theme/index';
 
 const BottomTab = createBottomTabNavigator();
 
 export default function AppMain() {
-  const theme = useTheme();
   const setNavigationState = useSetRecoilState(navigationState);
 
   return (
