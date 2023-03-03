@@ -1,39 +1,35 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import API from 'api';
-import videoApi from 'api/Video';
 
 export default function useVideos() {
+  const quaryClient = useQueryClient();
   const getVideos = useQuery(['videos'], () => API.Video.getItem(), {
     retry: 0,
-    onError: (error) => {
-      console.log('getVideos_error', error);
-    },
-    onSuccess: (data) => {
-      console.log('data', data);
-    },
+    onError: (error) => {},
+    onSuccess: (data) => {},
   });
 
   const addVideos = useMutation(API.Video.postItem, {
-    onError: (error) => {
-      console.log('addVideos_error', error);
-    },
+    onError: (error) => {},
     onSuccess: (data) => {
-      console.log('data', data);
-      getVideos.refetch();
+      quaryClient.invalidateQueries(['videos']);
     },
   });
+
   const getSearchVideos = useMutation(API.Video.searchItem, {
-    onError: (error) => {
-      console.log('getSearchVideos_error', error);
-    },
-    onSuccess: (data) => {
-      console.log('data', data);
-    },
+    onError: (error) => {},
+    onSuccess: (data) => {},
+  });
+
+  const patchProgressStatus = useMutation(API.Video.patchProgressStatus, {
+    onError: (error) => {},
+    onSuccess: (data) => {},
   });
 
   return {
     getVideos,
     addVideos,
     getSearchVideos,
+    patchProgressStatus,
   };
 }
