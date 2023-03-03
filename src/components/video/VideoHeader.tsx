@@ -1,10 +1,8 @@
-import Typo from '@components/Typo';
-import { LightColors } from '@styles/Styles';
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import ArrowBottomIcon from '@assets/image/icon-arrow-buttom.svg';
 import ArrowTopIcon from '@assets/image/icon-arrow-top.svg';
-import { Spacer } from '@components/index';
+import { Spacer, Typo } from '@components/common';
 import { VideoHeaderPropsType } from '~types/videoTypes';
 
 const Header = {
@@ -24,10 +22,10 @@ const Header = {
     justifyContent: 'center',
     alignItems: 'flex-end',
   }),
-  Typo: styled(Typo.Normal_2)({
+  Typo: styled(Typo.Normal_2)(({ theme }) => ({
     fontWeight: 500,
-    color: LightColors.colors.TEXT_SUB,
-  }),
+    color: theme.colors.TEXT_SUB,
+  })),
 };
 
 const Dropdown = {
@@ -54,13 +52,14 @@ const Dropdown = {
   })),
 };
 
-export default function VideoHeader({ setValue, value }: VideoHeaderPropsType) {
+export default function VideoHeader({ setValue, value, setProgressStatus }: VideoHeaderPropsType) {
   const progress = ['진행중', '완료', '전체'];
   const [index, setIndex] = useState<number>(0);
   const presentStatus: string = progress[index];
 
   const handleProgress = (_index: number) => {
     setIndex(_index);
+    setProgressStatus(_index);
   };
 
   return (
@@ -76,34 +75,25 @@ export default function VideoHeader({ setValue, value }: VideoHeaderPropsType) {
             onPress={() => {
               handleProgress(0);
               setValue();
-            }}>
-            {presentStatus === '진행중' ? (
-              <Dropdown.Typo checked>진행중</Dropdown.Typo>
-            ) : (
-              <Dropdown.Typo>진행중</Dropdown.Typo>
-            )}
+            }}
+          >
+            {presentStatus === '진행중' ? <Dropdown.Typo checked>진행중</Dropdown.Typo> : <Dropdown.Typo>진행중</Dropdown.Typo>}
           </Dropdown.Button>
           <Dropdown.Button
             onPress={() => {
               handleProgress(1);
               setValue();
-            }}>
-            {presentStatus === '완료' ? (
-              <Dropdown.Typo checked>완료</Dropdown.Typo>
-            ) : (
-              <Dropdown.Typo>완료</Dropdown.Typo>
-            )}
+            }}
+          >
+            {presentStatus === '완료' ? <Dropdown.Typo checked>완료</Dropdown.Typo> : <Dropdown.Typo>완료</Dropdown.Typo>}
           </Dropdown.Button>
           <Dropdown.Button
             onPress={() => {
               handleProgress(2);
               setValue();
-            }}>
-            {presentStatus === '전체' ? (
-              <Dropdown.Typo checked>전체</Dropdown.Typo>
-            ) : (
-              <Dropdown.Typo>전체</Dropdown.Typo>
-            )}
+            }}
+          >
+            {presentStatus === '전체' ? <Dropdown.Typo checked>전체</Dropdown.Typo> : <Dropdown.Typo>전체</Dropdown.Typo>}
           </Dropdown.Button>
         </Dropdown.Box>
       )}

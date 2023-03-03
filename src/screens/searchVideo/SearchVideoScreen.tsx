@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import ScreensLayout from '@components/ScreensLayout';
+import React, { FC, useState } from 'react';
 import VideoNoneIcon from '@assets/image/icon-video-none.svg';
 import styled from 'styled-components/native';
 import SearchIcon from '@assets/image/icon-search.svg';
-import { Spacer, TextInputBox } from '@components/index';
+import { Spacer, TextInputBox, ScreensLayout } from '@components/common';
 import { SearchVideoContents } from '@components/searchVideo';
+import { ScrollView } from 'react-native';
+import useVideos from '@hooks/video/useVideos';
 
 const SearchVideo = {
   Container: styled.View({
@@ -24,47 +25,48 @@ const SearchVideo = {
   })),
 };
 
-const dummySearchVideoList = [
-  {
-    id: 1,
-    url: '',
-    title: 'hihop dance title',
-    thumbnail: 'https://i.ytimg.com/vi/exppHlhjp9k/maxresdefault.jpg',
-    description: 'String',
-  },
-  {
-    id: 2,
-    url: '',
-    title: 'hihop dance title2',
-    thumbnail: 'https://i.ytimg.com/vi/exppHlhjp9k/maxresdefault.jpg',
-    description: 'String',
-  },
-  {
-    id: 3,
-    url: '',
-    title: 'hihop dance title3',
-    thumbnail: 'https://i.ytimg.com/vi/exppHlhjp9k/maxresdefault.jpg',
-    description: 'String',
-  },
-];
-
-export default function SearchVideoScreen() {
+const SearchVideoScreen: FC = () => {
   const [videoName, setVideoName] = useState<string>('');
+  const { getSearchVideos } = useVideos();
+  const { data, isSuccess } = getSearchVideos;
+  const searchVideos = data?.data ?? [];
+
+  const searchVideo = () => {
+    if (!videoName) return;
+    getSearchVideos.mutate(videoName);
+  };
 
   return (
     <ScreensLayout>
       <Spacer height={15} />
       <SearchVideo.Box>
         <SearchIcon />
-        <TextInputBox minWidth={'75%'} placeholder={'Search Videos'} onChangeText={setVideoName} value={videoName} />
+        <TextInputBox
+          minWidth={'75%'}
+          placeholder={'Search Videos'}
+          onChangeText={setVideoName}
+          value={videoName}
+          onSubmitEditing={searchVideo}
+          returnKeyType="done"
+        />
       </SearchVideo.Box>
       <SearchVideo.Container>
-        {dummySearchVideoList.map((video) => (
-          <SearchVideoContents searchVideo={video} key={video.id} />
-        ))}
-        <VideoNoneIcon />
-        <Spacer height={55} />
+        <Spacer height={20} />
+        {isSuccess ? (
+          <ScrollView>
+            {searchVideos.map((video) => (
+              <SearchVideoContents videoContents={video} key={video?.videoId} />
+            ))}
+          </ScrollView>
+        ) : (
+          <>
+            <VideoNoneIcon />
+            <Spacer height={55} />
+          </>
+        )}
       </SearchVideo.Container>
     </ScreensLayout>
   );
-}
+};
+
+export default SearchVideoScreen;

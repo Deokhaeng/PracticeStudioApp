@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { VideoScreen } from '@screens/index';
+import { VideoContentsScreen } from '@screens/video';
 
 export default function Video() {
   const VideoStack = createStackNavigator();
@@ -13,10 +13,11 @@ export default function Video() {
           backgroundColor: '#fff',
         },
         headerTitleAlign: 'center',
-      }}>
+      }}
+    >
       <VideoStack.Screen
-        name="VideoScreen"
-        component={VideoScreen}
+        name="VideoContentScreen"
+        component={VideoContentsScreen}
         options={{
           headerShown: false,
         }}

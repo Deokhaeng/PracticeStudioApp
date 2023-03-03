@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SearchVideoScreen } from '@screens/index';
+import { SearchVideoScreen } from '@screens/searchVideo';
 
 export default function SearchVideo() {
   const SearchVideoStack = createStackNavigator();
@@ -13,7 +13,8 @@ export default function SearchVideo() {
           backgroundColor: '#fff',
         },
         headerTitleAlign: 'center',
-      }}>
+      }}
+    >
       <SearchVideoStack.Screen
         name="SearchVideoScreen"
         component={SearchVideoScreen}

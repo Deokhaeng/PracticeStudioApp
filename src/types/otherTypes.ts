@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
+import { GestureResponderEvent } from 'react-native';
 import { DefaultTheme } from 'styled-components';
-
-export type UseThemeType = () => DefaultTheme;
 
 export type SpacerPropsType = {
   height: number;
@@ -24,24 +23,29 @@ export interface ScreensLayoutPropsType {
   children: ReactNode;
 }
 
+export type ToggleType = 'learned' | 'gender';
+
 export interface CheckTogglePropsType {
-  setValue(value: boolean): void;
-  value: boolean;
-  setModalVisible(value: boolean): void;
-  modalVisible: boolean;
-  onPress(): void;
+  setValue?(value: boolean): void;
+  value?: boolean;
+  checked: boolean;
+  handleToggle: (checked: boolean) => void;
+  onPress?(): void;
+  onColor?: string;
+  type: ToggleType;
 }
 
+export type ModalType = 'cancel' | 'check' | 'save' | 'remove' | 'profile' | 'learned' | 'beforeLearned';
+
 export interface AlertModalPropsType {
-  cancel: boolean;
-  check: boolean;
-  save: boolean;
-  deletes: boolean;
   alertText: string;
-  setModalVisible(value: boolean): void;
+  type: ModalType;
   modalVisible: boolean;
-  setValue(value: boolean): void;
-  value: boolean;
+  setValue?(value: boolean): void;
+  value?: boolean;
+  modalWidth?: number;
+  handleModal: (visible: boolean) => void;
+  onPress?: (event?: GestureResponderEvent) => void;
 }
 
 export type TextInputBoxProps = {
@@ -52,4 +56,6 @@ export type TextInputBoxProps = {
   width: number | string;
   minWidth: number | string;
   maxWidth: number;
+  backgroundColor: string;
+  paddingHorizontal: string | number;
 };

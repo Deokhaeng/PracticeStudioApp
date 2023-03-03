@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Typo } from '@components/index';
+import { Typo } from '@components/common';
 
 const Profile = {
   Container: styled.View({
@@ -9,10 +9,10 @@ const Profile = {
   Typo: styled(Typo.Normal_3)({}),
 };
 
-export default function RankScreen() {
+export default function ProfileScreen() {
   return (
     <Profile.Container>
-      <Profile.Typo>RankScreen</Profile.Typo>
+      <Profile.Typo>ProfileScreen</Profile.Typo>
     </Profile.Container>
   );
 }

@@ -1,7 +1,6 @@
 # OSX
 #
 .DS_Store
-
 # Xcode
 #
 build/
@@ -31,7 +30,9 @@ local.properties
 
 # Visual Studio Code
 #
-
+.env
+.env.production
+.env.development
 # node.js
 #
 node_modules/

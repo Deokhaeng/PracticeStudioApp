@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { CalendarScreen } from '@screens/index';
+import { CalendarScreen } from '@screens/calendar';
 
 export default function Calendar() {
   const CalendarStack = createStackNavigator();
@@ -13,7 +13,8 @@ export default function Calendar() {
           backgroundColor: '#fff',
         },
         headerTitleAlign: 'center',
-      }}>
+      }}
+    >
       <CalendarStack.Screen
         name="SearchVideoScreen"
         component={CalendarScreen}

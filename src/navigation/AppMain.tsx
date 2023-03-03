@@ -7,11 +7,15 @@ import CalendarIcon from '@assets/image/icon-calendar.svg';
 import RankIcon from '@assets/image/icon-rank.svg';
 import useTheme from '@theme/useTheme';
 import isAndroid from '@utils/isAndroid';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { useSetRecoilState } from 'recoil';
+import { navigationState } from '@atoms/navigationState';
 
 const BottomTab = createBottomTabNavigator();
 
 export default function AppMain() {
   const theme = useTheme();
+  const setNavigationState = useSetRecoilState(navigationState);
 
   return (
     <BottomTab.Navigator
@@ -20,19 +24,24 @@ export default function AppMain() {
         tabBarShowLabel: false,
         tabBarActiveTintColor: theme.colors.PRIMARY,
         tabBarInactiveTintColor: theme.colors.BLACK,
-
-        tabBarStyle: {
-          height: isAndroid ? 60 : 90,
-        },
-      }}>
+        tabBarStyle: { height: 80 },
+      }}
+    >
       <BottomTab.Screen
         name="Videos"
         component={Video}
-        options={{
+        options={({ route }) => ({
+          tabBarStyle: ((_route) => {
+            const routeName = getFocusedRouteNameFromRoute(_route);
+            if (routeName === 'VideoScreen') {
+              return { display: 'none' };
+            }
+            return { height: 80 };
+          })(route),
           tabBarLabel: 'Videos',
           tabBarAccessibilityLabel: 'Videos',
           tabBarIcon: ({ color }) => <VideoIcon width={35} height={35} fill={color} />,
-        }}
+        })}
       />
       <BottomTab.Screen
         name="SearchVideo"
@@ -43,7 +52,7 @@ export default function AppMain() {
           tabBarIcon: ({ color }) => <SearchVideoIcon width={35} height={35} fill={color} />,
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Calendar"
         component={Calendar}
         options={{
@@ -60,7 +69,7 @@ export default function AppMain() {
           tabBarAccessibilityLabel: 'Ranking',
           tabBarIcon: ({ color }) => <RankIcon width={35} height={35} fill={color} />,
         }}
-      />
+      /> */}
     </BottomTab.Navigator>
   );
 }
