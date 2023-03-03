@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { useWindowDimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { SearchVideoContentsType } from '~types/searchVideoTypes';
 import { AlertModal, Spacer, Typo } from '@components/common';
-import useVideos from '@hooks/useVideos';
-
-const screenWidth = Dimensions.get('window').width;
+import useVideos from '@hooks/video/useVideos';
 
 const SerchVideo = {
   Container: styled.TouchableOpacity(({ theme }) => ({})),
   Box: styled.View({
     paddingHorizontal: 13,
   }),
-  Image: styled.Image({
+  Image: styled.Image<{ screenWidth: number }>(({ screenWidth }) => ({
     height: screenWidth / 1.78,
     width: screenWidth,
     borderRadius: 0,
-  }),
+  })),
   Typo: styled(Typo.Normal_4)({
     fontWeight: 500,
   }),
@@ -26,16 +24,20 @@ const SerchVideo = {
   })),
 };
 
-export default function SearchVideoContents({ videoContents }: SearchVideoContentsType) {
+const SearchVideoContents: FC<SearchVideoContentsType> = ({ videoContents }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
+  const { width: screenWidth } = useWindowDimensions();
   const { addVideos } = useVideos();
+
+  const handleModal = (visible: boolean) => {
+    setModalVisible(visible);
+  };
 
   useEffect(() => {
     if (!saved) return;
-    const params = '';
-    // addVideos.mutate(params);
-    console.log('저장');
+    if (!videoContents) return;
+    addVideos.mutate(videoContents);
   }, [saved]);
 
   return (
@@ -45,6 +47,7 @@ export default function SearchVideoContents({ videoContents }: SearchVideoConten
           source={{
             uri: videoContents?.thumbnail,
           }}
+          screenWidth={screenWidth}
         />
         <Spacer height={15} />
         <SerchVideo.Box>
@@ -58,7 +61,9 @@ export default function SearchVideoContents({ videoContents }: SearchVideoConten
         </SerchVideo.Box>
         <Spacer height={20} />
       </SerchVideo.Container>
-      <AlertModal alertText={videoContents?.title} setModalVisible={setModalVisible} modalVisible={modalVisible} setValue={setSaved} value={saved} save />
+      <AlertModal alertText={videoContents.title} handleModal={handleModal} modalVisible={modalVisible} setValue={setSaved} value={saved} type="save" />
     </>
   );
-}
+};
+
+export default SearchVideoContents;

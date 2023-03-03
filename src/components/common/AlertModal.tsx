@@ -1,14 +1,10 @@
-import React from 'react';
-import { Dimensions, Modal } from 'react-native';
+import React, { FC } from 'react';
+import { Modal } from 'react-native';
 import styled from 'styled-components/native';
-import { AlertModalPropsType } from '~types/otherTypes';
+import { AlertModalPropsType, ModalType } from '~types/otherTypes';
 import Divider from './Divider';
 import Spacer from './Spacer';
 import Typo from './Typo';
-
-const screenWidth = Math.round(Dimensions.get('window').width);
-const modalWidth = screenWidth - 80;
-const modalHeight = screenWidth - 100;
 
 const Alert = {
   Background: styled.Pressable(({ theme }) => ({
@@ -17,15 +13,15 @@ const Alert = {
     height: '100%',
     opacity: 0.3,
   })),
-  Box: styled.View<Partial<AlertModalPropsType>>(({ theme, save, deletes }) => ({
+  Box: styled.View<{ type?: ModalType }>(({ theme, type }) => ({
     position: 'absolute',
     backgroundColor: theme.colors.WHITE,
-    width: modalWidth,
-    height: save || deletes ? 163 : 139,
+    width: 300,
+    height: type && ['save', 'remove'].includes(type) ? 164 : 140,
     top: '50%',
     left: '50%',
-    marginTop: save || deletes ? -(163 / 2) : -(139 / 2),
-    marginLeft: -(modalWidth / 2),
+    marginTop: type && ['save', 'remove'].includes(type) ? -(164 / 2) : -(140 / 2),
+    marginLeft: -(300 / 2),
     borderRadius: 6,
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -34,7 +30,7 @@ const Alert = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: modalWidth,
+    width: 300,
     paddingHorizontal: '7%',
   }),
   BottomBox: styled.View(({ theme }) => ({
@@ -50,9 +46,16 @@ const Alert = {
     flex: 1,
     alignItems: 'center',
   }),
-  Typo: styled(Typo.Normal_4)<Partial<AlertModalPropsType>>(({ theme, cancel, deletes, check, save }) => ({
+  Typo: styled(Typo.Normal_4)<{ type?: ModalType }>(({ theme, type }) => ({
     fontWeight: 600,
-    color: cancel ? theme.colors.WHITE : deletes ? theme.colors.PINK : check || save ? theme.colors.SKYBLUE : theme.colors.TEXT_DEFAULT,
+    color:
+      type === 'cancel'
+        ? theme.colors.WHITE
+        : type === 'remove'
+        ? theme.colors.PINK
+        : type && ['check', 'save'].includes(type)
+        ? theme.colors.SKYBLUE
+        : theme.colors.TEXT_DEFAULT,
   })),
   SubTypo: styled(Typo.Normal_3)(({ theme }) => ({
     color: theme.colors.MIDIUMGRAY,
@@ -60,74 +63,78 @@ const Alert = {
   })),
 };
 
-export default function AlertModal({ alertText, setModalVisible, modalVisible, save, deletes, check, setValue, value }: Partial<AlertModalPropsType>) {
+const AlertModal: FC<AlertModalPropsType> = ({ alertText, handleModal, setValue, value, type, modalVisible, onPress }) => {
   return (
     <Modal
       animationType="fade"
       transparent={true}
       visible={modalVisible}
-      // presentationStyle={'overFullScreen'}
       onRequestClose={() => {
-        setModalVisible && setModalVisible(!modalVisible);
+        handleModal(false);
       }}
     >
       <Alert.Background
         onPress={() => {
-          setModalVisible && setModalVisible(!modalVisible);
+          handleModal(false);
         }}
       />
-      <Alert.Box save={save} deletes={deletes}>
-        <Alert.TopBox>
-          <Alert.Typo numberOfLines={1} ellipsizeMode="tail">
-            {alertText}
-          </Alert.Typo>
-          {save && (
-            <>
-              <Spacer height={8} />
-              <Alert.SubTypo>위의 동영상을 저장할까요?</Alert.SubTypo>
-            </>
-          )}
-          {deletes && (
-            <>
-              <Spacer height={8} />
-              <Alert.SubTypo>위의 동영상을 삭제할까요?</Alert.SubTypo>
-            </>
-          )}
-        </Alert.TopBox>
-        <Alert.BottomBox>
-          {check || save || deletes ? (
-            <>
+      {['save', 'remove', 'check', 'learned', 'beforeLearned'].includes(type) && (
+        <Alert.Box type={type}>
+          <Alert.TopBox>
+            <Alert.Typo numberOfLines={1} ellipsizeMode="tail">
+              {alertText}
+            </Alert.Typo>
+            {type === 'save' && (
+              <>
+                <Spacer height={8} />
+                <Alert.SubTypo>위의 동영상을 저장할까요?</Alert.SubTypo>
+              </>
+            )}
+            {type === 'remove' && (
+              <>
+                <Spacer height={8} />
+                <Alert.SubTypo>위의 동영상을 삭제할까요?</Alert.SubTypo>
+              </>
+            )}
+          </Alert.TopBox>
+          <Alert.BottomBox>
+            {['check', 'save', 'remove', 'learned', 'beforeLearned'].includes(type) ? (
+              <>
+                <Alert.Button
+                  onPress={() => {
+                    handleModal(false);
+                  }}
+                >
+                  <Alert.Typo type="cancel">취소</Alert.Typo>
+                </Alert.Button>
+                <Divider height />
+                <Alert.Button
+                  onPress={() => {
+                    handleModal(false);
+                    setValue && setValue(!value);
+                    onPress && onPress();
+                  }}
+                >
+                  {['check', 'learned', 'beforeLearned'].includes(type) && <Alert.Typo type="check">확인</Alert.Typo>}
+                  {type === 'save' && <Alert.Typo type={type}>저장</Alert.Typo>}
+                  {type === 'remove' && <Alert.Typo type={type}>삭제</Alert.Typo>}
+                </Alert.Button>
+              </>
+            ) : (
               <Alert.Button
                 onPress={() => {
-                  setModalVisible && setModalVisible(!modalVisible);
-                }}
-              >
-                <Alert.Typo cancel>취소</Alert.Typo>
-              </Alert.Button>
-              <Divider height />
-              <Alert.Button
-                onPress={() => {
-                  setModalVisible && setModalVisible(!modalVisible);
+                  handleModal(false);
                   setValue && setValue(!value);
                 }}
               >
-                {check && <Alert.Typo check>확인</Alert.Typo>}
-                {save && <Alert.Typo save>저장</Alert.Typo>}
-                {deletes && <Alert.Typo deletes>삭제</Alert.Typo>}
+                <Alert.Typo type="check">확인</Alert.Typo>
               </Alert.Button>
-            </>
-          ) : (
-            <Alert.Button
-              onPress={() => {
-                setModalVisible && setModalVisible(!modalVisible);
-                setValue && setValue(!value);
-              }}
-            >
-              <Alert.Typo check>확인</Alert.Typo>
-            </Alert.Button>
-          )}
-        </Alert.BottomBox>
-      </Alert.Box>
+            )}
+          </Alert.BottomBox>
+        </Alert.Box>
+      )}
     </Modal>
   );
-}
+};
+
+export default AlertModal;
