@@ -9,7 +9,7 @@ export type SpacerPropsType = {
 
 export type TypoPropsType = {
   color: string | undefined;
-  weight: string;
+  weight: string | number;
   align: string | number;
 };
 
@@ -59,3 +59,7 @@ export type TextInputBoxProps = {
   backgroundColor: string;
   paddingHorizontal: string | number;
 };
+
+export type Integerable = string | number;
+
+export type ResourceType = 'Videos';

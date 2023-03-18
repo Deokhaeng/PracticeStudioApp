@@ -2,14 +2,37 @@ import { VideoContentType } from '~types/videoTypes';
 import { client } from './client';
 import { AxiosResponse } from 'axios';
 
+export interface Paginated<T> {
+  /** 전체 리소스 수 */
+  total_page: number;
+  /** 다음 목록을 가지고 오기 위한 Page */
+  next_page: string;
+  videos: T[];
+}
+
 type ProgressUpsetType = {
   id: string;
   progressStatus: number;
 };
 
+type ProgressResponseType = {
+  message: string;
+};
+
+export interface ListArgs {
+  nextPage?: number;
+  /** 검색 키워드 */
+  search?: string;
+}
+
 const Video = {
-  getItem(): Promise<AxiosResponse<VideoContentType[]>> {
-    const endpoint = '/videos/1';
+  getItem(params: ListArgs): Promise<AxiosResponse<VideoContentType[]>> {
+    const endpoint = `/videos/${params.nextPage}`;
+
+    return client.get(endpoint);
+  },
+  getTest(params: ListArgs): Promise<AxiosResponse<Paginated<VideoContentType>>> {
+    const endpoint = `/videotest/${params.nextPage}`;
 
     return client.get(endpoint);
   },
@@ -18,15 +41,16 @@ const Video = {
 
     return client.post(endpoint, params);
   },
-  searchItem(params: string): Promise<AxiosResponse<VideoContentType[]>> {
-    const endpoint = `/searchVideos?search=${params}`;
+  searchItem(params: ListArgs): Promise<AxiosResponse<VideoContentType[]>> {
+    const endpoint = `/searchVideos?search=${params.search}`;
 
     return client.get(endpoint);
   },
-  patchProgressStatus(params: ProgressUpsetType): Promise<AxiosResponse<any>> {
-    const endpoint = `/progressStatus/${params.id}`;
+  patchProgressStatus(params: ProgressUpsetType): Promise<AxiosResponse<ProgressResponseType>> {
+    const { id, progressStatus } = params;
+    const endpoint = `/progressStatus/${id}`;
 
-    return client.put(endpoint, params.progressStatus);
+    return client.put(endpoint, { progressStatus });
   },
 };
 

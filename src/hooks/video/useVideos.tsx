@@ -3,11 +3,6 @@ import API from 'api';
 
 export default function useVideos() {
   const quaryClient = useQueryClient();
-  const getVideos = useQuery(['videos'], () => API.Video.getItem(), {
-    retry: 0,
-    onError: (error) => {},
-    onSuccess: (data) => {},
-  });
 
   const addVideos = useMutation(API.Video.postItem, {
     onError: (error) => {},
@@ -22,12 +17,15 @@ export default function useVideos() {
   });
 
   const patchProgressStatus = useMutation(API.Video.patchProgressStatus, {
-    onError: (error) => {},
-    onSuccess: (data) => {},
+    onError: (error) => {
+      console.log('patchProgressStatusError', error);
+    },
+    onSuccess: (data) => {
+      quaryClient.invalidateQueries(['videos']);
+    },
   });
 
   return {
-    getVideos,
     addVideos,
     getSearchVideos,
     patchProgressStatus,

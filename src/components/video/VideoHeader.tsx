@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
 import ArrowBottomIcon from '@assets/image/icon-arrow-bottom-small.svg';
 import ArrowTopIcon from '@assets/image/icon-arrow-top.svg';
@@ -52,16 +52,7 @@ const Dropdown = {
   })),
 };
 
-export default function VideoHeader({ setValue, value, setProgressStatus }: VideoHeaderPropsType) {
-  const progress = ['진행중', '완료', '전체'];
-  const [index, setIndex] = useState<number>(0);
-  const presentStatus: string = progress[index];
-
-  const handleProgress = (_index: number) => {
-    setIndex(_index);
-    setProgressStatus(_index);
-  };
-
+export default function VideoHeader({ setValue, value, handleProgress, presentStatus }: VideoHeaderPropsType) {
   return (
     <Header.Container>
       <Spacer height={3} />
