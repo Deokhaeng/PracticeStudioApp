@@ -1,10 +1,9 @@
-import { Spacer, Typo } from '@components/common';
-import useYearMonthData from '@hooks/profile/useYearMonthData';
+import { Typo } from '@components/common';
 import dayjs from 'dayjs';
-import { Dispatch, FC, SetStateAction, useState } from 'react';
+import { FC, useState } from 'react';
 import { Modal, useWindowDimensions } from 'react-native';
-import WheelPicker from 'react-native-wheely';
 import styled from 'styled-components/native';
+import DatePicker from 'react-native-date-picker';
 
 const PopUp = {
   Background: styled.Pressable({
@@ -15,7 +14,7 @@ const PopUp = {
     position: 'absolute',
     bottom: 0,
     width: screenWidth,
-    height: 228,
+    height: 250,
     backgroundColor: theme.colors.BACKGROUND,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
@@ -52,10 +51,6 @@ const PopUp = {
     height: 150,
     paddingBottom: 60,
   })),
-  PickerBox: styled.View({
-    height: 150,
-    width: 60,
-  }),
   TopIcon: styled.View(({ theme }) => ({
     width: 50,
     height: 5,
@@ -81,24 +76,11 @@ interface DateSettingModalPropsType {
 }
 
 const DateSettingModal: FC<DateSettingModalPropsType> = ({ modalVisible, handleModal, handleDateOfBirth }) => {
-  const [selectedYearIndex, setSelectedYearIndex] = useState<number>(0);
-  const [selectedMonthIndex, setSelectedMonthIndex] = useState<number>(0);
-  const [selectedDayIndex, setSelectiedDayIndex] = useState<number>(0);
   const { width: screenWidth } = useWindowDimensions();
-
-  const { yearOption, monthOption, dayOption, selectedYear, selectedMonth, selectedDay } = useYearMonthData(
-    selectedYearIndex,
-    selectedMonthIndex,
-    selectedDayIndex
-  );
+  const [date, setDate] = useState(new Date());
 
   const handleDate = () => {
-    const selectedDate = dayjs()
-      .set('year', parseInt(selectedYear, 10))
-      .set('month', parseInt(selectedMonth, 10) - 1)
-      .set('date', parseInt(selectedDay, 10));
-
-    const selectedDateString = dayjs(selectedDate).format('YYYY-MM-DD');
+    const selectedDateString = dayjs(date).format('YYYY-MM-DD');
     handleDateOfBirth(selectedDateString);
     handleModal(false);
   };
@@ -121,49 +103,7 @@ const DateSettingModal: FC<DateSettingModalPropsType> = ({ modalVisible, handleM
           </PopUp.InnerBottomBox>
         </PopUp.TopBox>
         <PopUp.BottomBox screenWidth={screenWidth}>
-          <PopUp.PickerBox>
-            <WheelPicker
-              selectedIndex={selectedYearIndex}
-              options={yearOption}
-              onChange={(index) => setSelectedYearIndex(index)}
-              containerStyle={{
-                width: 70,
-                height: 120,
-              }}
-              itemHeight={25}
-              itemTextStyle={{ fontSize: 15 }}
-              selectedIndicatorStyle={{ backgroundColor: 'transparant' }}
-            />
-          </PopUp.PickerBox>
-          <Spacer width={10} />
-          <PopUp.PickerBox>
-            <WheelPicker
-              selectedIndex={selectedMonthIndex}
-              options={monthOption}
-              onChange={(index) => setSelectedMonthIndex(index)}
-              containerStyle={{
-                width: 60,
-                height: 120,
-              }}
-              itemHeight={25}
-              itemTextStyle={{ fontSize: 15 }}
-              selectedIndicatorStyle={{ backgroundColor: 'transparant' }}
-            />
-          </PopUp.PickerBox>
-          <PopUp.PickerBox>
-            <WheelPicker
-              selectedIndex={selectedDayIndex}
-              options={dayOption}
-              onChange={(index) => setSelectiedDayIndex(index)}
-              containerStyle={{
-                width: 60,
-                height: 120,
-              }}
-              itemHeight={25}
-              itemTextStyle={{ fontSize: 15 }}
-              selectedIndicatorStyle={{ backgroundColor: 'transparant' }}
-            />
-          </PopUp.PickerBox>
+          <DatePicker date={date} onDateChange={setDate} mode={'date'} locale="ko" />
         </PopUp.BottomBox>
       </PopUp.Container>
     </Modal>

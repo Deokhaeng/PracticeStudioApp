@@ -7,7 +7,8 @@ export interface Paginated<T> {
   total_page: number;
   /** 다음 목록을 가지고 오기 위한 Page */
   next_page: string;
-  videos: T[];
+  /** 현재 데이터 */
+  results: T[];
 }
 
 type ProgressUpsetType = {

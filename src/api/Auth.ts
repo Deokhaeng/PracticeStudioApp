@@ -1,6 +1,8 @@
 import { AxiosResponse } from 'axios';
 import { client } from './client';
 
+export type GenderType = '남성' | '여성' | '선택 안함';
+
 export interface Response {
   error: null;
   message: string;
@@ -19,9 +21,9 @@ export interface TokenResponse {
 }
 
 export interface ProfileType {
-  name: string;
-  gender: string;
-  profileImage: string;
+  nickname: string;
+  gender: GenderType;
+  profileImg: string;
   birth: string;
 }
 
@@ -29,10 +31,9 @@ const Auth = {
   /**
    * 서드 파티 서비스를 사용한 토큰 발급을 진행합니다.
    */
-  tpToken(args: TPTokenArgs): Promise<AxiosResponse<TokenResponse>> {
+  async tpToken(args: TPTokenArgs): Promise<AxiosResponse<TokenResponse>> {
     const endpoint = `/login/${args.type}?accesstoken=${args.token}`;
-
-    return client.get<TokenResponse>(endpoint);
+    return await client.get<TokenResponse>(endpoint);
   },
   refresh(args: Partial<TPTokenArgs>): Promise<AxiosResponse<TokenResponse>> {
     const endpoint = `/refresh?refreshToken=${args.token}`;
@@ -44,10 +45,10 @@ const Auth = {
 
     return client.delete<Response>(endpoint);
   },
-  putProfile(args: Partial<ProfileType>): Promise<AxiosResponse<TokenResponse>> {
+  putProfile(args: Partial<ProfileType>): Promise<AxiosResponse<ProfileType>> {
     const endpoint = `/user/profile`;
 
-    return client.put<TokenResponse>(endpoint, args);
+    return client.put<ProfileType>(endpoint, args);
   },
   getProfile(): Promise<AxiosResponse<ProfileType>> {
     const endpoint = `/user/profile`;
