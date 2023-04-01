@@ -3,7 +3,8 @@ import { useWindowDimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { SearchVideoContentsType } from '~types/searchVideoTypes';
 import { AlertModal, Spacer, Typo } from '@components/common';
-import useVideos from '@hooks/video/useVideos';
+import { usePostMutation } from '@hooks/mutation';
+import API from 'api';
 
 const SerchVideo = {
   Container: styled.TouchableOpacity(({ theme }) => ({})),
@@ -28,7 +29,7 @@ const SearchVideoContents: FC<SearchVideoContentsType> = ({ videoContents }) => 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [saved, setSaved] = useState<boolean>(false);
   const { width: screenWidth } = useWindowDimensions();
-  const { addVideos } = useVideos();
+  const { mutateAsync: addVideos } = usePostMutation(API.Video.postItem, ['videos']);
 
   const handleModal = (visible: boolean) => {
     setModalVisible(visible);
@@ -37,7 +38,7 @@ const SearchVideoContents: FC<SearchVideoContentsType> = ({ videoContents }) => 
   useEffect(() => {
     if (!saved) return;
     if (!videoContents) return;
-    addVideos.mutate(videoContents);
+    addVideos({ variables: videoContents });
   }, [saved]);
 
   return (

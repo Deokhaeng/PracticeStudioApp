@@ -5,7 +5,8 @@ import SearchIcon from '@assets/image/icon-search.svg';
 import { Spacer, TextInputBox, ScreensLayout } from '@components/common';
 import { SearchVideoContents } from '@components/searchVideo';
 import { ScrollView } from 'react-native';
-import useVideos from '@hooks/video/useVideos';
+import { useGetMutation } from '@hooks/mutation';
+import API from 'api';
 
 const SearchVideo = {
   Container: styled.View({
@@ -27,13 +28,11 @@ const SearchVideo = {
 
 const SearchVideoScreen: FC = () => {
   const [videoName, setVideoName] = useState<string>('');
-  const { getSearchVideos } = useVideos();
-  const { data, isSuccess } = getSearchVideos;
-  const searchVideos = data?.data ?? [];
+  const { data: searchedVideos = [], mutateAsync: searchVideos, state } = useGetMutation(API.Video.searchItem, ['videos', 'search'], { search: videoName });
 
   const searchVideo = () => {
     if (!videoName) return;
-    getSearchVideos.mutate(videoName);
+    searchVideos();
   };
 
   return (
@@ -52,9 +51,9 @@ const SearchVideoScreen: FC = () => {
       </SearchVideo.Box>
       <SearchVideo.Container>
         <Spacer height={20} />
-        {isSuccess ? (
+        {state === 'success' ? (
           <ScrollView>
-            {searchVideos.map((video) => (
+            {searchedVideos.map((video) => (
               <SearchVideoContents videoContents={video} key={video?.videoId} />
             ))}
           </ScrollView>
