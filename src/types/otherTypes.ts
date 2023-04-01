@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { GestureResponderEvent } from 'react-native';
-import { DefaultTheme } from 'styled-components';
 
 export type SpacerPropsType = {
   height: number;
@@ -9,7 +8,7 @@ export type SpacerPropsType = {
 
 export type TypoPropsType = {
   color: string | undefined;
-  weight: string;
+  weight: string | number;
   align: string | number;
 };
 

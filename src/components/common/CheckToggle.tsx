@@ -1,23 +1,37 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components/native';
 import CheckIcon from '@assets/image/icon-check.svg';
 import { CheckTogglePropsType } from '~types/otherTypes';
-import useTheme from '@theme/useTheme';
+import theme from '@theme/index';
 
 const CheckToggleContainer = styled.TouchableOpacity({
   marginRight: 0,
 });
 
-export default function CheckToggle({ value, setValue, modalVisible, setModalVisible }: Partial<CheckTogglePropsType>) {
-  const theme = useTheme();
+const Chcek = {
+  Container: styled.TouchableOpacity({
+    marginRight: 0,
+  }),
+  Circle: styled.View<{ checked: boolean }>(({ theme, checked }) => ({
+    width: 20,
+    height: 20,
+    borderRadius: 20,
+    backgroundColor: checked ? theme.colors.BLACK : theme.colors.WHITE,
+  })),
+};
 
+const CheckToggle: FC<CheckTogglePropsType> = ({ value, setValue, checked, handleToggle, onColor, type }) => {
   return (
-    <CheckToggleContainer
+    <Chcek.Container
       onPress={() => {
         setValue && setValue(!value);
-        setModalVisible && setModalVisible(!modalVisible);
-      }}>
-      <CheckIcon fill={value ? theme.colors.PRIMARY : theme.colors.LIGHTGRAY} width={20} height={20} />
-    </CheckToggleContainer>
+        handleToggle(!checked);
+      }}
+    >
+      {type === 'learned' && <CheckIcon fill={checked ? theme.colors.PRIMARY : theme.colors.LIGHTGRAY} width={20} height={20} />}
+      {type === 'gender' && <Chcek.Circle checked={checked} />}
+    </Chcek.Container>
   );
-}
+};
+
+export default CheckToggle;

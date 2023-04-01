@@ -66,7 +66,6 @@ const Alert = {
 const AlertModal: FC<AlertModalPropsType> = ({ alertText, handleModal, setValue, value, type, modalVisible, onPress }) => {
   return (
     <Modal
-      animationType="fade"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
