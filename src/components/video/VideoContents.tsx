@@ -5,7 +5,8 @@ import { Spacer, Typo, CheckToggle, AlertModal } from '@components/common';
 import { LearningStateType, VideoContentsPropsType } from '~types/videoTypes';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProps } from '~types/navigationTypes';
-import useVideos from '@hooks/video/useVideos';
+import { usePatchMutation } from '@hooks/mutation';
+import API from 'api';
 
 const VideoContent = {
   Box: styled.TouchableOpacity<{ screenWidth: number }>(({ screenWidth }) => ({
@@ -44,10 +45,10 @@ const VideoContent = {
 export default function VideoContents({ video }: VideoContentsPropsType) {
   const navigation = useNavigation<NavigationProps>();
   const { width: screenWidth } = useWindowDimensions();
-  const { patchProgressStatus } = useVideos();
   const [learningState, setLearingState] = useState<LearningStateType>('beforeLearned');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const isChecked = learningState === 'learned' ? true : false;
+  const { mutateAsync: patchProgressStatus } = usePatchMutation(API.Video.patchProgressStatus, ['videos']);
 
   const handleLearning = (state: LearningStateType) => {
     setLearingState(state);
@@ -60,10 +61,10 @@ export default function VideoContents({ video }: VideoContentsPropsType) {
   const completeLearning = () => {
     if (learningState === 'beforeLearned') {
       handleLearning('learned');
-      patchProgressStatus.mutate({ id: video._id, progressStatus: 1 });
+      patchProgressStatus({ id: video._id, progressStatus: 1 });
     } else {
       handleLearning('beforeLearned');
-      patchProgressStatus.mutate({ id: video._id, progressStatus: 0 });
+      patchProgressStatus({ id: video._id, progressStatus: 0 });
     }
   };
 

@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { GestureResponderEvent } from 'react-native';
-import { DefaultTheme } from 'styled-components';
 
 export type SpacerPropsType = {
   height: number;
@@ -59,7 +58,3 @@ export type TextInputBoxProps = {
   backgroundColor: string;
   paddingHorizontal: string | number;
 };
-
-export type Integerable = string | number;
-
-export type ResourceType = 'Videos';

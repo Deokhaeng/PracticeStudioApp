@@ -1,22 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ScreensLayout } from '@components/common';
 import { VideoContents, VideoHeadr } from '@components/video';
 import { FlatList } from 'react-native';
-import styled from 'styled-components/native';
 import { ProgressType } from '~types/videoTypes';
 import { usePagination } from '@hooks/query';
 import API from 'api';
-
-const Video = {
-  Container: styled.View({
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignContent: 'stretch',
-    paddingHorizontal: 10,
-  }),
-  Box: styled.View({}),
-};
 
 export default function VideoContentsScreen() {
   const [onDropdown, setOnDropdown] = useState<boolean>(false);
@@ -24,7 +12,16 @@ export default function VideoContentsScreen() {
   const progress: ProgressType[] = ['진행중', '완료', '전체'];
   const [index, setIndex] = useState<number>(0);
   const presentStatus: ProgressType = progress[index];
-  const { data: videoContents, invalidate, fetchList } = usePagination({ callableFC: API.Video.getTest, apiKey: 'Videos' });
+  const { data: videoContents, invalidate, fetchList, status } = usePagination({ callableFC: API.Video.getTest, apiKey: 'videos' });
+  const currentVideos = useMemo(() => {
+    if (presentStatus === '완료') {
+      return videoContents.filter((item) => item.progress_status === 1);
+    }
+    if (presentStatus === '진행중') {
+      return videoContents.filter((item) => item.progress_status === 0);
+    }
+    return videoContents;
+  }, [presentStatus, videoContents]);
 
   const handleProgress = (_index: number) => {
     setIndex(_index);
@@ -48,15 +45,10 @@ export default function VideoContentsScreen() {
       <FlatList
         numColumns={2}
         style={{ paddingHorizontal: 10, marginTop: 5 }}
-        data={videoContents}
+        data={currentVideos}
         contentContainerStyle={{ padding: 0, margin: 0 }}
-        renderItem={({ item }) => (
-          <Video.Box key={item._id}>
-            {item.progress_status === index && presentStatus !== '전체' && <VideoContents video={item} />}
-            {presentStatus === '전체' && <VideoContents video={item} />}
-          </Video.Box>
-        )}
-        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => <VideoContents video={item} />}
+        keyExtractor={(item, index) => `key_${index}`}
         onEndReached={() => {
           fetchList();
         }}
