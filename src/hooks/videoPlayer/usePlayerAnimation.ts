@@ -26,28 +26,36 @@ export default function usePlayerAnimation() {
 
   const padeOutPauseButton = useCallback(
     (setPauseButtonVisible: Dispatch<SetStateAction<boolean>>) => {
-      setTimeout(() => {
+      padeOutLetterbox();
+      const set = setInterval(() => {
         Animated.timing(pauseButtonOpacity, {
           toValue: 0,
           duration: 2000,
           useNativeDriver: false,
-        }).start();
+        }).start(() => setPauseButtonVisible(false));
+        clearInterval(set);
       }, 2000);
-      setTimeout(() => {
-        setPauseButtonVisible(false);
-      }, 4000);
     },
     [pauseButtonOpacity]
   );
 
   const padeInPauseButton = useCallback(
     (setPauseButtonVisible: Dispatch<SetStateAction<boolean>>) => {
-      Animated.timing(pauseButtonOpacity, {
-        toValue: 1,
-        duration: 0,
-        useNativeDriver: false,
-      }).start();
-      setPauseButtonVisible(true);
+      return new Promise<boolean>((resolve, rejects) => {
+        try {
+          padeInLetterbox();
+          Animated.timing(pauseButtonOpacity, {
+            toValue: 1,
+            duration: 0,
+            useNativeDriver: false,
+          }).start();
+          setPauseButtonVisible(true);
+          resolve(true);
+        } catch {
+          resolve(false);
+          rejects();
+        }
+      });
     },
     [pauseButtonOpacity]
   );

@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components/native';
 import VideoIcon from '@assets/image/icon-video.svg';
 import { Animated } from 'react-native';
@@ -24,24 +24,19 @@ const Player = {
 type PlayButtonPropsType = {
   playButtonVisible: boolean;
   playButtonOpacity: Animated.Value;
-  isHorizontalMode: boolean;
-  setPlaying: Dispatch<SetStateAction<boolean>>;
+  playVideo: () => void;
 };
 
-const PlayButton: FC<PlayButtonPropsType> = ({ playButtonVisible, playButtonOpacity, isHorizontalMode, setPlaying }) => {
+const PlayButton: FC<PlayButtonPropsType> = ({ playButtonVisible, playButtonOpacity, playVideo }) => {
   return (
     <Player.PlayButtonBox
       style={{
         display: playButtonVisible ? 'flex' : 'none',
         opacity: playButtonOpacity,
-        transform: [{ rotate: isHorizontalMode ? '360deg' : '90deg' }],
+        transform: [{ rotate: '90deg' }],
       }}
     >
-      <Player.Button
-        onPress={() => {
-          setPlaying(true);
-        }}
-      >
+      <Player.Button onPress={playVideo}>
         <VideoIcon fill={theme.colors.PRIMARY} width={90} height={90} />
       </Player.Button>
     </Player.PlayButtonBox>

@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction } from 'react';
+import { FC } from 'react';
 import PauseIcon from '@assets/image/icon-pause.svg';
 import styled from 'styled-components/native';
 import { Animated } from 'react-native';
@@ -19,17 +19,12 @@ const Player = {
 
 type PauseButtonPropsType = {
   pauseButtonOpacity: Animated.Value;
-  isHorizontalMode: boolean;
-  setPlaying: Dispatch<SetStateAction<boolean>>;
+  playVideo: () => void;
 };
-const PauseButton: FC<PauseButtonPropsType> = ({ pauseButtonOpacity, isHorizontalMode, setPlaying }) => {
+const PauseButton: FC<PauseButtonPropsType> = ({ pauseButtonOpacity, playVideo }) => {
   return (
-    <Player.PauseButtonBox style={{ opacity: pauseButtonOpacity, transform: [{ rotate: isHorizontalMode ? '360deg' : '90deg' }] }}>
-      <Player.Button
-        onPress={() => {
-          setPlaying(false);
-        }}
-      >
+    <Player.PauseButtonBox style={{ opacity: pauseButtonOpacity, transform: [{ rotate: '90deg' }] }}>
+      <Player.Button onPress={playVideo}>
         <PauseIcon fill={theme.colors.BACKGROUND} width={80} height={80} />
       </Player.Button>
     </Player.PauseButtonBox>
