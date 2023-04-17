@@ -12,15 +12,19 @@ export default function VideoContentsScreen() {
   const progress: ProgressType[] = ['진행중', '완료', '전체'];
   const [index, setIndex] = useState<number>(0);
   const presentStatus: ProgressType = progress[index];
-  const { data: videoContents, invalidate, fetchList, status } = usePagination({ callableFC: API.Video.getTest, apiKey: 'videos' });
+  const { data: videoContents, invalidate, fetchList, status } = usePagination({ callableFC: API.Video.getItems, apiKey: 'videos' });
   const currentVideos = useMemo(() => {
-    if (presentStatus === '완료') {
-      return videoContents.filter((item) => item.progress_status === 1);
+    switch (presentStatus) {
+      case '완료': {
+        return videoContents.filter((item) => item.progress_status === 1);
+      }
+      case '진행중': {
+        return videoContents.filter((item) => item.progress_status === 0);
+      }
+      default: {
+        return videoContents;
+      }
     }
-    if (presentStatus === '진행중') {
-      return videoContents.filter((item) => item.progress_status === 0);
-    }
-    return videoContents;
   }, [presentStatus, videoContents]);
 
   const handleProgress = (_index: number) => {

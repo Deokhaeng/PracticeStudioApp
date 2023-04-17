@@ -6,7 +6,6 @@ const Token: TokenInterface = {
     return new Promise<string | null>((resolve, reject) => {
       try {
         const token = AsyncStorage.getItem('RUNTHE_ACCESS_TOKEN');
-        console.log('token', token);
         resolve(token);
       } catch {
         reject();
