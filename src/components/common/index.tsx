@@ -7,5 +7,6 @@ import Divider from './Divider';
 import AlertModal from './AlertModal';
 import TextInputBox from './TextInputBox';
 import CustomButton from './CustomButton';
+export { default as IsLoadingHOC } from './IsLoadingHOC';
 
 export { ScreensLayout, Shadow, Spacer, Typo, CheckToggle, Divider, AlertModal, TextInputBox, CustomButton };
