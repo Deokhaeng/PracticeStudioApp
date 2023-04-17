@@ -2,6 +2,7 @@ import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-quer
 import { GetApiFunc, PaginatedCallable } from './types';
 import { AxiosError } from 'axios';
 import { Integerable, ResourceType } from '~types/apiTypes';
+import { errorResponse } from '@utils/index';
 
 export const usePagination = <T>({ callableFC, search, apiKey }: { callableFC: PaginatedCallable<T>; search?: string; apiKey?: ResourceType }) => {
   const queryClient = useQueryClient();
@@ -10,9 +11,8 @@ export const usePagination = <T>({ callableFC, search, apiKey }: { callableFC: P
     onSuccess: (res) => {},
     getNextPageParam: (page) => page.next_page,
     onError: (error: AxiosError) => {
-      console.log(error.message);
-      const errorRes = error.response?.data as { message: Object };
-      console.log(`usePagination_error: ${apiKey} status: ${error.response?.status} message: ${errorRes}`);
+      const { message, errorStatus } = errorResponse(error);
+      console.log(`usePagination_error: ${apiKey} status: ${errorStatus} message: ${message}`);
     },
   });
   const invalidate = () => {
@@ -50,7 +50,8 @@ export const useGetQuery = <T, U>(api: GetApiFunc<T, U>, apiKeys: [ResourceType,
     refetchOnWindowFocus: true,
     retry: 1,
     onError: (error: AxiosError) => {
-      `useGetQuery: ${apiKeys} status: ${error.status} message: ${error.response?.data}`;
+      const { message, errorStatus } = errorResponse(error);
+      console.log(`useGetQuery_error: ${apiKeys} status: ${errorStatus} message: ${message}`);
     },
     onSuccess: (_data) => {
       // queryClient.invalidateQueries(apiKeys);
