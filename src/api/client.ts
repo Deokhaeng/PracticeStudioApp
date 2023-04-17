@@ -1,7 +1,7 @@
 import { API_BASE_PATH } from '@env';
-import API from 'api';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import Token from 'token';
+import { TokenResponse } from '../api/Auth';
 
 const client = axios.create({
   baseURL: API_BASE_PATH,
@@ -33,15 +33,14 @@ client.interceptors.response.use(
 
     if (response?.status === 401 && !$$retry) {
       const refreshToken = await Token.getRefreshToken();
-
       if (refreshToken === null) {
         Token.removeToken();
         Token.moveToSigninPage();
         return Promise.reject(error);
       }
-
       $$retry = true;
-      const tokenResponse = await API.Auth.refresh({ token: refreshToken });
+      const endpoint = `/refresh?refreshToken=${refreshToken}`;
+      const tokenResponse = await client.get<TokenResponse>(endpoint);
       const newToken = tokenResponse.data.accessToken;
       Token.setAccessToken(newToken);
       return {
@@ -64,7 +63,7 @@ export { client };
 export type CancelableAxiosPromise<T> = Promise<AxiosResponse<T>> & {
   cancel(): void;
 };
-type AvailableMethods = 'get' | 'post' | 'patch' | 'delete';
+type AvailableMethods = 'get' | 'post' | 'patch' | 'delete' | 'put';
 export function makeCancelableRequest<T>(method: AvailableMethods, url: string, data: object, config: AxiosRequestConfig): CancelableAxiosPromise<T> {
   const CancelTokenImpl = axios.CancelToken;
   const source = CancelTokenImpl.source();

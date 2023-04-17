@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NavigationProps } from '~types/navigationTypes';
 import { usePatchMutation } from '@hooks/mutation';
 import API from 'api';
+import { useThrottle } from '@hooks/index';
 
 const VideoContent = {
   Box: styled.TouchableOpacity<{ screenWidth: number }>(({ screenWidth }) => ({
@@ -49,6 +50,7 @@ export default function VideoContents({ video }: VideoContentsPropsType) {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const isChecked = learningState === 'learned' ? true : false;
   const { mutateAsync: patchProgressStatus } = usePatchMutation(API.Video.patchProgressStatus, ['videos']);
+  const { throttle } = useThrottle();
 
   const handleLearning = (state: LearningStateType) => {
     setLearingState(state);
@@ -68,6 +70,10 @@ export default function VideoContents({ video }: VideoContentsPropsType) {
     }
   };
 
+  const moveVideoPalyer = () => {
+    throttle(() => navigation.push('VideoPlayerScreen', { videoContent: video }));
+  };
+
   useEffect(() => {
     if (video.progress_status === 0) {
       setLearingState('beforeLearned');
@@ -78,7 +84,7 @@ export default function VideoContents({ video }: VideoContentsPropsType) {
 
   return (
     <>
-      <VideoContent.Box onPress={() => navigation.push('VideoPlayerScreen', { videoContent: video })} screenWidth={screenWidth}>
+      <VideoContent.Box onPress={moveVideoPalyer} screenWidth={screenWidth}>
         <VideoContent.ButtonBox onPress={() => handleModal(true)} />
 
         <VideoContent.Image

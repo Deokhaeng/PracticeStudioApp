@@ -27,13 +27,8 @@ export interface ListArgs {
 }
 
 const Video = {
-  getItem(params: ListArgs): Promise<AxiosResponse<VideoContentType[]>> {
+  getItems(params: ListArgs): Promise<AxiosResponse<Paginated<VideoContentType>>> {
     const endpoint = `/videos/${params.nextPage}`;
-
-    return client.get(endpoint);
-  },
-  getTest(params: ListArgs): Promise<AxiosResponse<Paginated<VideoContentType>>> {
-    const endpoint = `/videotest/${params.nextPage}`;
 
     return client.get(endpoint);
   },

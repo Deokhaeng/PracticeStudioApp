@@ -3,12 +3,14 @@ import { DeleteAPIFunc, PatchAPIFunc, PostAPIFunc } from './types';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { Integerable, ResourceType } from '~types/apiTypes';
+import { errorResponse } from '@utils/index';
 
 export const useGetMutation = <T, U>(api: GetApiFunc<T, U>, apiKeys: [ResourceType, Integerable] | [ResourceType], variables?: U & Integerable) => {
   const { mutateAsync, status, data } = useMutation([apiKeys], async (): Promise<T> => (await api(variables)).data, {
     retry: 0,
     onError: (error: AxiosError) => {
-      console.log(`useGetMutation: ${apiKeys} status: ${error.response?.status} message: ${error.response?.data}`);
+      const { message, errorStatus } = errorResponse(error);
+      console.log(`useGetMutation_error: ${apiKeys} status: ${errorStatus} message: ${message}`);
     },
     onSuccess: (_data) => {
       // queryClient.invalidateQueries(apiKeys);
@@ -25,7 +27,8 @@ export const usePostMutation = <L, T extends L | L[], V extends {} = {}>(api: Po
       query.invalidateQueries(apiKeys);
     },
     onError(error: AxiosError) {
-      `usePostMutation: ${apiKeys} status: ${error.status} message: ${error.response?.data}`;
+      const { message, errorStatus } = errorResponse(error);
+      console.log(`usePostMutation_error: ${apiKeys} status: ${errorStatus} message: ${message}`);
     },
   });
   return { mutateAsync, state: status, data: data?.data };
@@ -38,7 +41,8 @@ export const usePatchMutation = <T, U extends Partial<T & any>>(api: PatchAPIFun
       query.invalidateQueries(apiKeys);
     },
     onError(error: AxiosError) {
-      `usePatchMutation: ${apiKeys} status: ${error.status} message: ${error.response?.data}`;
+      const { message, errorStatus } = errorResponse(error);
+      console.log(`usePatchMutation_error: ${apiKeys} status: ${errorStatus} message: ${message}`);
     },
   });
   return { mutateAsync, state: status, data: data?.data };
@@ -51,7 +55,8 @@ export const useDeleteMutation = (api: DeleteAPIFunc, apiKeys: [ResourceType, In
       query.invalidateQueries(apiKeys);
     },
     onError(error: AxiosError) {
-      `useDeleteMutation: ${apiKeys} status: ${error.status} message: ${error.response?.data}`;
+      const { message, errorStatus } = errorResponse(error);
+      console.log(`useDeleteMutation_error: ${apiKeys} status: ${errorStatus} message: ${message}`);
     },
   });
 

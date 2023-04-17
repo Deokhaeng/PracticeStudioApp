@@ -39,7 +39,6 @@
       "@hooks/*": ["hooks/*"],
       "@navigation/*": ["navigation/*"],
       "@screens/*": ["screens/*"],
-      "@styles/*": ["styles/*"],
       "@theme/*": ["theme/*"],
       "~types/*": ["types/*"],
       "@utils/*": ["utils/*"]
