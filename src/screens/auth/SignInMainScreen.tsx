@@ -12,6 +12,7 @@ import useAppleAuth from '@hooks/auth/useAppleAuth';
 import useAuth from '@hooks/auth/useAuth';
 import useKakaoAuth from '@hooks/auth/useKakaoAuth';
 import theme from '@theme/index';
+// import { LoginManager } from 'react-native-fbsdk-next';
 
 const SignInMain = {
   Container: styled.View(({ theme }) => ({
@@ -46,12 +47,28 @@ export default function SignInMainScreen() {
   const performTPLogin = async (type: 'facebook' | 'kakao' | 'apple' | 'google', tokenPromise: Promise<string | null>) => {
     let token: string | null = null;
     token = await tokenPromise;
+    console.log(token);
     if (!token) {
       // Alert.alert('로그인 실패', '외부 서비스 연결에 실패하였습니다.');
       return;
     }
     getTpToken.mutate({ type, token });
   };
+
+  // const facebookLogin = () => {
+  //   LoginManager.logInWithPermissions(['public_profile']).then(
+  //     function (result) {
+  //       if (result.isCancelled) {
+  //         console.log('Login cancelled');
+  //       } else {
+  //         console.log('Login success with permissions: ' + result.grantedPermissions!.toString());
+  //       }
+  //     },
+  //     function (error) {
+  //       console.log('Login fail with error: ' + error);
+  //     }
+  //   );
+  // };
 
   return (
     <SignInMain.Container>
@@ -62,17 +79,17 @@ export default function SignInMainScreen() {
       </SignInMain.TopBox>
       <Spacer height={11} />
       <SignInMain.BottomBox>
-        <SignInMain.Button>
-          {isAndroid ? <GoogleIcon /> : <AppleIcon onPress={() => performTPLogin('apple', appleAuth())} fill={theme.colors.BLACK} />}
+        <SignInMain.Button onPress={() => performTPLogin('apple', appleAuth())}>
+          <AppleIcon fill={theme.colors.BLACK} />
         </SignInMain.Button>
         <Spacer width={11} />
         <SignInMain.Button onPress={() => performTPLogin('kakao', kakaoAuth())}>
           <KakaoIcon />
         </SignInMain.Button>
         <Spacer width={11} />
-        <SignInMain.Button onPress={() => navigation.replace('AppMain', {})}>
+        {/* <SignInMain.Button onPress={() => facebookLogin()}>
           <FacebookIcon />
-        </SignInMain.Button>
+        </SignInMain.Button> */}
       </SignInMain.BottomBox>
     </SignInMain.Container>
   );
