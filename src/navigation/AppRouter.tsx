@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { NavigationContainer, useNavigation, useRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AppMain from './AppMain';
@@ -6,8 +6,6 @@ import styled from 'styled-components/native';
 import Auth from './Auth';
 import { Typo } from '@components/common';
 import ProfileIcon from '@assets/image/icon-profile.svg';
-import { useRecoilValue } from 'recoil';
-import { navigationState } from '@atoms/navigationState';
 import { VideoPlayerScreen } from '@screens/videoPlayer';
 import { ProfileScreen, ProfileSettingScreen } from '@screens/profile';
 import { NavigationProps } from '~types/navigationTypes';
@@ -25,10 +23,6 @@ const Header = {
 
 const AppRouter: FC = () => {
   const Stack = createStackNavigator();
-  const presentNavigationState = useRecoilValue(navigationState);
-  // const route = useRoute();
-
-  console.log('presentNavigationState', presentNavigationState);
 
   const HeaderTitle: FC = () => {
     return <Header.Typo>Practice Studio</Header.Typo>;
@@ -61,7 +55,6 @@ const AppRouter: FC = () => {
             options={{
               animationEnabled: true,
               headerTitle: '',
-              // headerShown: presentNavigationState === 'videoScreen' && false,
               headerLeft: HeaderTitle,
               headerRight: ProfileButton,
             }}

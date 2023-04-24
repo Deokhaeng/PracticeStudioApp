@@ -1,13 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { CheckToggle, CustomButton, Spacer, TextInputBox, Typo } from '@components/common';
+import { CustomButton, Spacer, TextInputBox, Typo } from '@components/common';
 import BackButton from '@assets/image/icon-arrow-back.svg';
 import EllipseIcon from '@assets/image/icon-ellipse.svg';
 import ArrowBottomIcon from '@assets/image/icon-arrow-bottom.svg';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProps } from '~types/navigationTypes';
 import theme from '@theme/index';
-import { DateSettingModal, ProfileSettingModal } from '@components/profile';
+import { DateSettingModal, GenderSettingModal, ProfileSettingModal } from '@components/profile';
 import { GenderType } from 'api/Auth';
 import { useGetQuery } from '@hooks/query';
 import API from 'api';
@@ -76,7 +76,7 @@ const Header = {
   }),
 };
 
-const DateOfBirth = {
+const WheelPicker = {
   Box: styled.View(({ theme }) => ({
     backgroundColor: theme.colors.BACKGROUND,
     height: 40,
@@ -93,48 +93,17 @@ const DateOfBirth = {
   }),
 };
 
-const Gender = {
-  Box: styled.View({
-    width: '100%',
-    paddingLeft: 5,
-  }),
-  InnnerBox: styled.View({
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  }),
-  ContentBox: styled.Pressable({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  Typo: styled(Typo.Normal_4)<{ checked: boolean }>(({ theme, checked }) => ({
-    fontWeight: 500,
-    color: checked ? theme.colors.BLACK : theme.colors.MIDIUMGRAY,
-  })),
-};
-
-interface GenderStatusType {
-  gender: GenderType;
-  checked: boolean;
-}
-
-const defaultGenderStatus: GenderStatusType[] = [
-  { gender: '남성', checked: false },
-  { gender: '여성', checked: false },
-  { gender: '선택 안함', checked: false },
-];
-
 const ProfileScreen: FC = () => {
   const navigation = useNavigation<NavigationProps>();
-  const { data: profile } = useGetQuery(API.Auth.getProfile, ['profile']);
+  const { data: profile, status } = useGetQuery(API.Auth.getProfile, ['profile']);
   const { mutateAsync: editProfile } = usePatchMutation(API.Auth.putProfile, ['profile']);
   const [name, setName] = useState<string>(profile?.nickname || '');
   const [dateModalVisible, setDateModalVisible] = useState<boolean>(false);
   const [dateOfBirth, setDateOfBirth] = useState<string>(profile?.birth || '');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [genderModalVisible, setGenderModalVisible] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [genderStatus, setGenderStatus] = useState<GenderStatusType[]>(defaultGenderStatus);
+  const [selectedGender, setSelectedGender] = useState<GenderType | undefined>(profile?.gender || undefined);
 
   const handleDateOfBirth = (date: string) => {
     setDateOfBirth(date);
@@ -155,32 +124,22 @@ const ProfileScreen: FC = () => {
   };
 
   const handleGender = (gender: GenderType) => {
-    setGenderStatus((prev) => {
-      const current = [...prev];
-      current.map((item) => {
-        return [item, (item.checked = false)];
-      });
-      const index = current.findIndex((item) => item.gender === gender);
-      current[index].checked = true;
-
-      return current;
-    });
+    setSelectedGender(gender);
+    setGenderModalVisible(false);
   };
 
   const editProfileState = () => {
-    const selectedGender = genderStatus.find((item) => item.checked === true)?.gender;
     editProfile({ nickname: name, birth: dateOfBirth, gender: selectedGender }).then(() => handleEditMode());
   };
 
   useEffect(() => {
-    if (!profile?.gender || !profile.nickname) {
+    if (['loading', 'error'].includes(status)) return;
+    if (!profile?.gender || !profile?.nickname) {
       setEditMode(true);
     }
+  }, [status]);
 
-    if (profile?.gender) {
-      handleGender(profile.gender);
-    }
-  }, [profile]);
+  useEffect(() => {});
 
   return (
     <Profile.Container>
@@ -216,35 +175,28 @@ const ProfileScreen: FC = () => {
           <Spacer height={20} />
           <Profile.Typo title>Gender</Profile.Typo>
           <Spacer height={11} />
-          <Gender.Box>
-            <Gender.InnnerBox>
-              {editMode ? (
-                genderStatus.map((item, index) => (
-                  <Gender.ContentBox key={`gender_${index}`} onPress={() => handleGender(item.gender)}>
-                    <CheckToggle handleToggle={() => {}} type="gender" checked={item.checked} />
-                    <Spacer width={10} />
-                    <Gender.Typo checked={item.checked}>{item.gender}</Gender.Typo>
-                  </Gender.ContentBox>
-                ))
-              ) : (
-                <Gender.ContentBox>
-                  <CheckToggle handleToggle={() => {}} type="gender" checked={true} />
-                  <Spacer width={10} />
-                  <Gender.Typo checked={true}>{profile?.gender}</Gender.Typo>
-                </Gender.ContentBox>
-              )}
-            </Gender.InnnerBox>
-          </Gender.Box>
+          {editMode ? (
+            <WheelPicker.Box>
+              <Profile.Typo>{selectedGender}</Profile.Typo>
+              <WheelPicker.Button onPress={() => setGenderModalVisible(true)}>
+                <ArrowBottomIcon />
+              </WheelPicker.Button>
+            </WheelPicker.Box>
+          ) : (
+            <Profile.TypoBox>
+              <Profile.Typo>{profile?.gender ? profile.gender : '-'}</Profile.Typo>
+            </Profile.TypoBox>
+          )}
           <Spacer height={20} />
           <Profile.Typo title>Date of birth</Profile.Typo>
           <Spacer height={5} />
           {editMode ? (
-            <DateOfBirth.Box>
+            <WheelPicker.Box>
               <Profile.Typo>{dateOfBirth}</Profile.Typo>
-              <DateOfBirth.Button onPress={() => setDateModalVisible(true)}>
+              <WheelPicker.Button onPress={() => setDateModalVisible(true)}>
                 <ArrowBottomIcon />
-              </DateOfBirth.Button>
-            </DateOfBirth.Box>
+              </WheelPicker.Button>
+            </WheelPicker.Box>
           ) : (
             <Profile.TypoBox>
               <Profile.Typo>{profile?.birth ? profile.birth : '-'}</Profile.Typo>
@@ -255,12 +207,7 @@ const ProfileScreen: FC = () => {
       <Profile.BottomBox>
         {editMode ? (
           <>
-            <CustomButton
-              buttontext="확인"
-              onPress={() => {
-                editProfileState();
-              }}
-            />
+            <CustomButton buttontext="확인" onPress={() => editProfileState()} />
             <Spacer height={20} />
           </>
         ) : (
@@ -268,6 +215,7 @@ const ProfileScreen: FC = () => {
         )}
       </Profile.BottomBox>
       <DateSettingModal modalVisible={dateModalVisible} handleModal={handleDateModal} handleDateOfBirth={handleDateOfBirth} />
+      <GenderSettingModal modalVisible={genderModalVisible} handleModal={(visible: boolean) => setGenderModalVisible(visible)} handleGender={handleGender} />
       <ProfileSettingModal
         modalVisible={modalVisible}
         handleModalVisible={handelProfielSettingModal}

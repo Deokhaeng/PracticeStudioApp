@@ -6,7 +6,7 @@ import { Integerable, ResourceType } from '~types/apiTypes';
 import { errorResponse } from '@utils/index';
 
 export const useGetMutation = <T, U>(api: GetApiFunc<T, U>, apiKeys: [ResourceType, Integerable] | [ResourceType], variables?: U & Integerable) => {
-  const { mutateAsync, status, data } = useMutation([apiKeys], async (): Promise<T> => (await api(variables)).data, {
+  const { mutateAsync, status, data } = useMutation(apiKeys, async (): Promise<T> => (await api(variables)).data, {
     retry: 0,
     onError: (error: AxiosError) => {
       const { message, errorStatus } = errorResponse(error);

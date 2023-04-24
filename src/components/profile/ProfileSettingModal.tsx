@@ -1,7 +1,9 @@
 import { Typo } from '@components/common';
 import { useNavigation } from '@react-navigation/native';
+import isAndroid from '@utils/isAndroid';
 import { FC } from 'react';
-import { Modal } from 'react-native';
+import { Modal, StatusBar } from 'react-native';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import styled from 'styled-components/native';
 import { NavigationProps } from '~types/navigationTypes';
 
@@ -11,13 +13,13 @@ const Alert = {
     width: '100%',
     height: '100%',
   }),
-  Box: styled.View(({ theme }) => ({
+  Box: styled.View<{ statusBarHeight: number }>(({ theme, statusBarHeight }) => ({
     position: 'absolute',
     backgroundColor: theme.colors.WHITE,
     width: 90,
     height: 85,
-    top: '11%',
-    right: '7%',
+    top: 45 + statusBarHeight,
+    right: 25,
     borderRadius: 6,
     justifyContent: 'space-evenly',
   })),
@@ -38,6 +40,7 @@ const ProfileSettingModal: FC<{ modalVisible: boolean; handleModalVisible: (visi
   handleEditMode,
 }) => {
   const navigation = useNavigation<NavigationProps>();
+  const statusBarHeight = isAndroid ? StatusBar.currentHeight ?? 0 : getStatusBarHeight(true);
 
   return (
     <Modal
@@ -53,7 +56,7 @@ const ProfileSettingModal: FC<{ modalVisible: boolean; handleModalVisible: (visi
           handleModalVisible(false);
         }}
       />
-      <Alert.Box>
+      <Alert.Box statusBarHeight={statusBarHeight}>
         <Alert.Button
           onPress={() => {
             handleModalVisible(false);

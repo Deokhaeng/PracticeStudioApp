@@ -57,7 +57,6 @@ const PlyabackBar: FC<{ player: YoutubeIframeRef }> = ({ player }) => {
     const checkDuration = setTimeout(
       () =>
         player.getDuration().then((duration) => {
-          console.log(duration);
           setTotalDuration(Math.floor(duration));
         }),
       1000

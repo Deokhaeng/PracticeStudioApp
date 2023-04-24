@@ -5,7 +5,7 @@ import { Modal, useWindowDimensions } from 'react-native';
 import styled from 'styled-components/native';
 import DatePicker from 'react-native-date-picker';
 
-const PopUp = {
+export const PopUp = {
   Background: styled.Pressable({
     flex: 1,
     backgroundColor: 'transparent',

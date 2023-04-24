@@ -31,7 +31,9 @@ client.interceptors.response.use(
     const { response } = error;
     const requestConfig = error.config;
 
-    if (response?.status === 401 && !$$retry) {
+    if (response?.status === 401) {
+      Token.moveToSigninPage();
+
       const refreshToken = await Token.getRefreshToken();
       if (refreshToken === null) {
         Token.removeToken();

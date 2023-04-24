@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { client } from './client';
 
-export type GenderType = '남성' | '여성' | '선택 안함';
+export type GenderType = '남성' | '여성' | '논바이너리' | '답변하고 싶지 않음' | '기타';
 
 export interface Response {
   error: null;
