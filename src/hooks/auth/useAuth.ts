@@ -1,14 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import processAccessToken from '@utils/processAccessToken';
+import { useMutation } from '@tanstack/react-query';
 import API from 'api';
 import { AxiosError } from 'axios';
 import Token from 'token';
 import { NavigationProps } from '~types/navigationTypes';
 import { logout as kakaoLogout } from '@react-native-seoul/kakao-login';
+import useProcessAccessToken from '@hooks/auth/useProcessAccessToken';
 
 export default function useAuth() {
   const navigation = useNavigation<NavigationProps>();
+  const { processAccessToken } = useProcessAccessToken();
 
   const getTpToken = useMutation(API.Auth.tpToken, {
     onError: (error: AxiosError) => {
@@ -32,12 +33,13 @@ export default function useAuth() {
   });
 
   const logout = () => {
-    Token.removeToken();
-    // GoogleSignin.signOut();
     kakaoLogout();
+    navigation.reset({ routes: [{ name: 'AppMain' }] });
+
     setTimeout(() => {
+      Token.removeToken();
       navigation.replace('Auth', {});
-    }, 500);
+    }, 100);
   };
 
   return { getTpToken, logout, withdraw };

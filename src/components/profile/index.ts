@@ -1,4 +1,3 @@
-import DateSettingModal from './DateSettingModal';
-import ProfileSettingModal from './ProfileSettingModal';
-
-export { DateSettingModal, ProfileSettingModal };
+export { default as DateSettingModal } from './DateSettingModal';
+export { default as ProfileSettingModal } from './ProfileSettingModal';
+export { default as GenderSettingModal } from './GenderSettingModal';
